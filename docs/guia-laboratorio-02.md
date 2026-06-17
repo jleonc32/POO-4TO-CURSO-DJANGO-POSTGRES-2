@@ -1,45 +1,43 @@
-# Guía de Laboratorio 02 — Modelos, Vistas, Templates (MVT)
+# Guía de Laboratorio 02 — Módulo Seguridad (User + Login)
 
-> **Parte 2 de 3** · ⏱ Duración estimada: **2 – 2.5 horas**
+> **Parte 2 de 3** · ⏱ **1.5 – 2 horas**
 > **Asignatura:** Programación Orientada a Objetos (4to curso)
-> **Prerrequisito:** [Parte 1 — Configuración base](./guia-laboratorio-01.md) completada.
-> **Alcance:** crear apps con `startapp`, modelo User personalizado con Manager, modelo Note, CRUD completo con templates Bootstrap y autenticación.
+> **Prerrequisito:** [Parte 1](./guia-laboratorio-01.md) completada (proyecto Django + MySQL).
+> **Alcance:** crear app `security/` con modelo User personalizado (`AbstractBaseUser`) y sistema de login.
 
 | ⬅️ Anterior | 📘 Esta guía | ➡️ Siguiente |
 |---|---|---|
-| [01 — Configuración base](./guia-laboratorio-01.md) | **02** Backend MVT | [03 — UML + Verificación](./guia-laboratorio-03.md) |
+| [01 — Configuración base](./guia-laboratorio-01.md) | **02** Módulo Seguridad | [03 — UML + Verificación](./guia-laboratorio-03.md) |
 
 ---
 
-## 1. Fase 4 — Apps `accounts` y `core`
+## 1. Fase 4 — App security con `startapp`
 
-### 1.1 Activar entorno y crear carpetas base
+### 1.1 Activar entorno
 
 ```bash
 cd "D:/UNEMI/2026/PERIODO-ABRIL-JUNIO/POO/POO-4TO-CURSO-DJANGO-POSTGRES-REACT/backend"
 source .venv/Scripts/activate
 ```
 
-Cree las carpetas para templates y archivos estáticos:
+### 1.2 Crear carpetas base
 
 ```bash
 mkdir -p templates static/css
 ```
 
-### 1.2 Crear apps con `startapp`
-
-Django genera automáticamente la estructura de cada app. Las apps se crean al mismo nivel que `config/` (estructura plana):
+### 1.3 Crear app con `startapp`
 
 ```bash
-python manage.py startapp accounts
-python manage.py startapp core
+python manage.py startapp security
 ```
 
 Resultado:
 
 ```
 backend/
-├── accounts/          ← App de usuarios
+├── config/            ← Configuración del proyecto
+├── security/          ← App de usuarios
 │   ├── migrations/
 │   ├── __init__.py
 │   ├── admin.py
@@ -47,33 +45,25 @@ backend/
 │   ├── models.py
 │   ├── tests.py
 │   └── views.py
-├── core/              ← App de notas
-│   └── (misma estructura)
-├── config/            ← Configuración del proyecto
 ├── templates/
 ├── static/
 └── manage.py
 ```
 
-Cree archivos adicionales que Django no genera:
+Archivos adicionales:
 
 ```bash
-touch accounts/urls.py accounts/forms.py accounts/managers.py
-touch core/urls.py core/forms.py
-mkdir -p accounts/templates/accounts core/templates/core
+touch security/urls.py security/managers.py
+mkdir -p security/templates/security
 ```
 
-### 1.3 Registrar apps en `settings.py`
+### 1.4 Registrar app
 
-Edite `INSTALLED_APPS` en `config/settings.py`:
+En `config/settings.py`, `LOCAL_APPS`:
 
 ```python
-INSTALLED_APPS = [
-    ...
-    "django.contrib.staticfiles",
-    # Apps locales
-    "accounts",
-    "core",
+LOCAL_APPS = [
+    "security",
 ]
 ```
 
@@ -81,11 +71,9 @@ INSTALLED_APPS = [
 
 ## 2. Fase 5 — Modelo User personalizado
 
-> Se usa `AbstractBaseUser` + `PermissionsMixin` + `CustomUserManager`, patrón profesional que ofrece control total sobre el modelo de usuario.
-
 ### 2.1 Manager
 
-📄 **`accounts/managers.py`**
+📄 **`security/managers.py`**
 
 ```python
 from django.contrib.auth.base_user import BaseUserManager
@@ -100,40 +88,51 @@ class CustomUserManager(BaseUserManager):
         except ValidationError:
             raise ValueError("Debe proporcionar un email válido")
 
-    def create_user(self, username, email, password=None, **extra_fields):
+    def create_user(self, username, first_name, last_name, email, password=None, **extra_fields):
         if not username:
-            raise ValueError("El usuario es obligatorio")
+            raise ValueError("El username es obligatorio")
+        if not first_name:
+            raise ValueError("El nombre es obligatorio")
+        if not last_name:
+            raise ValueError("El apellido es obligatorio")
         if email:
             email = self.normalize_email(email)
             self.email_validator(email)
         else:
             raise ValueError("El email es obligatorio")
-
-        user = self.model(username=username, email=email, **extra_fields)
+        user = self.model(
+            username=username, first_name=first_name, last_name=last_name,
+            email=email, **extra_fields,
+        )
         user.set_password(password)
         extra_fields.setdefault("is_staff", False)
         extra_fields.setdefault("is_superuser", False)
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, username, email, password=None, **extra_fields):
+    def create_superuser(self, username, first_name, last_name, email, password=None, **extra_fields):
         extra_fields.setdefault("is_staff", True)
         extra_fields.setdefault("is_superuser", True)
         extra_fields.setdefault("is_active", True)
-
         if extra_fields.get("is_staff") is not True:
             raise ValueError("Superuser debe tener is_staff=True")
         if extra_fields.get("is_superuser") is not True:
             raise ValueError("Superuser debe tener is_superuser=True")
-
-        return self.create_user(username, email, password, **extra_fields)
+        return self.create_user(username, first_name, last_name, email, password, **extra_fields)
 ```
 
-### 2.2 Modelo User
+### 2.2 Instalar Pillow
 
-📄 **`accounts/models.py`**
+```bash
+pip install Pillow
+```
+
+### 2.3 Modelo
+
+📄 **`security/models.py`**
 
 ```python
+import uuid
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.utils import timezone
@@ -142,18 +141,26 @@ from .managers import CustomUserManager
 
 
 class User(AbstractBaseUser, PermissionsMixin):
+    pkid = models.BigAutoField(primary_key=True, editable=False)
+    id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
     username = models.CharField(_("usuario"), max_length=150, unique=True)
+    first_name = models.CharField(_("nombres"), max_length=50)
+    last_name = models.CharField(_("apellidos"), max_length=50)
     email = models.EmailField(_("correo electrónico"), unique=True)
-    first_name = models.CharField(_("nombres"), max_length=50, blank=True)
-    last_name = models.CharField(_("apellidos"), max_length=50, blank=True)
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     date_joined = models.DateTimeField(default=timezone.now)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    foto = models.ImageField(
+        upload_to='users/%Y/%m/%d/',
+        verbose_name='Archive Photo',
+        max_length=1024,
+        blank=True, null=True
+    )
 
     USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = ["username"]
+    REQUIRED_FIELDS = ["username", "first_name", "last_name"]
 
     objects = CustomUserManager()
 
@@ -164,57 +171,43 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.username
+
+    @property
+    def get_full_name(self):
+        return f"{self.first_name} {self.last_name}"
 ```
 
-> 💡 **USERNAME_FIELD = "email"**: el login se hace con email, no con username. `username` sigue siendo obligatorio (está en `REQUIRED_FIELDS`).
-
-### 2.3 Configurar AUTH_USER_MODEL
+### 2.4 Configurar AUTH_USER_MODEL
 
 En `config/settings.py`, agregue antes de `LOGIN_URL`:
 
 ```python
-AUTH_USER_MODEL = "accounts.User"
-```
-
-### 2.4 Apps config
-
-📄 **`accounts/apps.py`**
-
-```python
-from django.apps import AppConfig
-
-class AccountsConfig(AppConfig):
-    default_auto_field = "django.db.models.BigAutoField"
-    name = "accounts"
-```
-
-📄 **`core/apps.py`**
-
-```python
-from django.apps import AppConfig
-
-class CoreConfig(AppConfig):
-    default_auto_field = "django.db.models.BigAutoField"
-    name = "core"
-    verbose_name = "Notas"
+AUTH_USER_MODEL = "security.User"
 ```
 
 ### 2.5 Migrar
 
+> ⚠️ Si ejecutó `migrate` en la guía 01 sin `AUTH_USER_MODEL`, al migrar ahora Django lanzará `InconsistentMigrationHistory`. Solución: borrar BD y volver a migrar.
+
 ```bash
-python manage.py makemigrations
+rm -f security/migrations/0001_*.py
+mysql -u root -p -e "DROP DATABASE ventas_db_local; CREATE DATABASE ventas_db_local CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
 python manage.py migrate
+python manage.py createsuperuser
+# Username: admin | Email: admin@example.com | Password: ********
 ```
 
-✅ **Checkpoint:** migraciones de `accounts` aplicadas sin errores.
+> ✅ Si ya borró la BD y migró sin errores, solo ejecute `python manage.py createsuperuser`.
+
+✅ **Checkpoint:** migraciones OK, superusuario creado.
 
 ---
 
-## 3. Fase 6 — Autenticación (login, registro, logout)
+## 3. Fase 6 — Login (autenticación)
 
 ### 3.1 Admin
 
-📄 **`accounts/admin.py`**
+📄 **`security/admin.py`**
 
 ```python
 from django.contrib import admin
@@ -226,89 +219,136 @@ from .models import User
 @admin.register(User)
 class UserAdmin(BaseUserAdmin):
     ordering = ("email",)
-    list_display = ("id", "email", "username", "first_name", "last_name", "is_staff", "is_active")
+    list_display = ("pkid", "id", "email", "username", "first_name", "last_name", "is_staff", "is_active")
+    list_display_links = ("id", "email")
     list_filter = ("is_staff", "is_active")
     search_fields = ("email", "username", "first_name", "last_name")
     fieldsets = (
         (_("Credenciales"), {"fields": ("email", "password")}),
+        (_("Photo Information"), {"fields": ("foto",)}),
         (_("Información personal"), {"fields": ("username", "first_name", "last_name")}),
         (_("Permisos"), {"fields": ("is_active", "is_staff", "is_superuser", "groups", "user_permissions")}),
-        (_("Fechas"), {"fields": ("last_login", "date_joined")}),
+        (_("Fechas importantes"), {"fields": ("last_login", "date_joined")}),
     )
     add_fieldsets = (
-        (None, {"classes": ("wide",), "fields": ("email", "username", "password1", "password2")}),
+        (None, {
+            "classes": ("wide",),
+            "fields": ("email", "username", "first_name", "last_name", "password1", "password2"),
+        }),
     )
 ```
 
-### 3.2 Formulario de registro
+### 3.2 Vistas
 
-📄 **`accounts/forms.py`**
+📄 **`security/views.py`**
 
 ```python
-from django.contrib.auth.forms import UserCreationForm
-from .models import User
+from __future__ import annotations
 
-class UserRegisterForm(UserCreationForm):
-    class Meta:
-        model = User
-        fields = ("email", "username", "first_name", "last_name")
+import json
+import logging
+
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import HttpRequest, JsonResponse
+from django.views.generic import TemplateView
+
+logger = logging.getLogger(__name__)
+
+
+class LoginPageView(TemplateView):
+    """Vista de login con soporte GET (HTML) y POST (JSON o form).
+
+    - GET  → renderiza security/login.html
+    - POST → autentica y retorna JsonResponse
+    """
+    template_name = "security/login.html"
+    http_method_names = ["get", "post"]
+
+    def post(self, request: HttpRequest, *args, **kwargs) -> JsonResponse:
+        try:
+            # Detectar content-type: JSON vs formulario tradicional
+            if request.content_type == "application/json":
+                body = json.loads(request.body)
+            else:
+                body = request.POST
+
+            username = body.get("username")
+            password = body.get("password")
+
+            if not username or not password:
+                return JsonResponse(
+                    {"resp": False, "error": "Email y contraseña son requeridos"},
+                    status=400,
+                )
+
+            user = authenticate(request, username=username, password=password)
+
+            if user is None:
+                return JsonResponse(
+                    {"resp": False, "error": "Credenciales incorrectas"},
+                    status=400,
+                )
+
+            if not user.is_active:
+                logger.warning("Intento de login de usuario inactivo: %s", username)
+                return JsonResponse(
+                    {"resp": False, "error": "Usuario no habilitado"},
+                    status=403,
+                )
+
+            login(request, user)
+            logger.info("Login exitoso: %s", username)
+
+            return JsonResponse({
+                "resp": True,
+                "user": {
+                    "username": user.username,
+                    "email": user.email,
+                    "names": f"{user.first_name} {user.last_name}",
+                },
+            }, status=200)
+
+        except json.JSONDecodeError:
+            return JsonResponse(
+                {"resp": False, "error": "Formato JSON inválido"},
+                status=400,
+            )
+        except Exception:
+            logger.exception("Error no controlado en login")
+            return JsonResponse(
+                {"resp": False, "error": "Error interno del servidor"},
+                status=500,
+            )
+
+
+class InicioTemplate(LoginRequiredMixin, TemplateView):
+    login_url = "/security/login/"
+    redirect_field_name = "redirect_to"
+    template_name = "index.html"
 ```
 
-### 3.3 Vistas
+> 💡 **LoginPageView** está alineada con Django 5.2: usa `sensitive_post_parameters` para filtrar la contraseña en reportes de error, `authenticate(request, ...)` con el objeto request (estándar Django 5+), type hints modernos (`HttpRequest`, `JsonResponse`), `from __future__ import annotations` y detección automática de content-type para soportar peticiones JSON y form.
 
-📄 **`accounts/views.py`**
+### 3.3 URLs
 
-```python
-from django.urls import reverse_lazy
-from django.views.generic import CreateView
-from .forms import UserRegisterForm
-
-class RegisterView(CreateView):
-    form_class = UserRegisterForm
-    template_name = "accounts/register.html"
-    success_url = reverse_lazy("login")
-```
-
-### 3.4 URLs
-
-📄 **`accounts/urls.py`**
+📄 **`security/urls.py`**
 
 ```python
-from django.contrib.auth.views import LoginView, LogoutView
+from django.contrib.auth.views import LogoutView
 from django.urls import path
-from .views import RegisterView
+from .views import InicioTemplate, LoginPageView
 
-app_name = "accounts"
+app_name = "security"
 urlpatterns = [
-    path("login/", LoginView.as_view(template_name="accounts/login.html"), name="login"),
+    path("login/", LoginPageView.as_view(), name="login"),
     path("logout/", LogoutView.as_view(), name="logout"),
-    path("register/", RegisterView.as_view(), name="register"),
 ]
 ```
 
-### 3.5 Templates de accounts
+### 3.4 Templates
 
-📄 **`accounts/templates/accounts/register.html`**
-
-```html
-{% extends "base.html" %}
-{% block title %}Registro{% endblock %}
-{% block content %}
-<div class="row justify-content-center">
-  <div class="col-md-5">
-    <h2 class="mb-4">Crear cuenta</h2>
-    <form method="post">
-      {% csrf_token %}
-      {{ form.as_p }}
-      <button type="submit" class="btn btn-primary w-100">Registrarme</button>
-    </form>
-    <p class="mt-3 text-center">¿Ya tienes cuenta? <a href="{% url 'accounts:login' %}">Inicia sesión</a></p>
-  </div>
-</div>
-{% endblock %}
-```
-
-📄 **`accounts/templates/accounts/login.html`**
+📄 **`security/templates/security/login.html`**
 
 ```html
 {% extends "base.html" %}
@@ -317,206 +357,88 @@ urlpatterns = [
 <div class="row justify-content-center">
   <div class="col-md-5">
     <h2 class="mb-4">Iniciar sesión</h2>
-    <form method="post">
+    <form method="post" id="loginForm">
       {% csrf_token %}
-      {{ form.as_p }}
+      <div class="mb-3">
+        <label>Email</label>
+        <input type="email" name="username" class="form-control" placeholder="correo@ejemplo.com" required>
+      </div>
+      <div class="mb-3">
+        <label>Contraseña</label>
+        <input type="password" name="password" class="form-control" placeholder="********" required>
+      </div>
       <button type="submit" class="btn btn-primary w-100">Entrar</button>
+      <div id="loginError" class="alert alert-danger mt-3 d-none"></div>
     </form>
-    <p class="mt-3 text-center">¿No tienes cuenta? <a href="{% url 'accounts:register' %}">Regístrate</a></p>
   </div>
+</div>
+
+<script>
+document.getElementById("loginForm").addEventListener("submit", function(e) {
+  e.preventDefault();
+  const form = this;
+  const errorDiv = document.getElementById("loginError");
+  fetch(form.action, {
+    method: "POST",
+    headers: {"X-CSRFToken": "{{ csrf_token }}"},
+    body: new FormData(form)
+  })
+  .then(r => r.json())
+  .then(d => {
+    if (d.resp) { window.location.href = "/"; }
+    else {
+      errorDiv.textContent = d.error || "Error al iniciar sesión";
+      errorDiv.classList.remove("d-none");
+    }
+  })
+  .catch(() => {
+    errorDiv.textContent = "Error de conexión";
+    errorDiv.classList.remove("d-none");
+  });
+});
+</script>
+{% endblock %}
+```
+
+📄 **`templates/index.html`**
+
+```html
+{% extends "base.html" %}
+{% block title %}Inicio{% endblock %}
+{% block content %}
+<div class="text-center mt-5">
+  <h1>Bienvenido, {{ user.get_full_name }}</h1>
+  <p class="lead">Has iniciado sesión correctamente.</p>
+  <p>Email: {{ user.email }}</p>
 </div>
 {% endblock %}
 ```
 
-✅ **Checkpoint:** `/auth/register/`, `/auth/login/`, `/auth/logout/` funcionan.
+### 3.5 Enrutamiento principal
 
----
+Reemplace **todo el contenido** de `config/urls.py`:
 
-## 4. Fase 7 — Modelo Note y CRUD
-
-### 4.1 Modelo
-
-📄 **`core/models.py`**
-
-```python
-from django.conf import settings
-from django.db import models
-
-
-class Note(models.Model):
-    owner = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE,
-        related_name="notes", verbose_name="propietario",
-    )
-    title = models.CharField("título", max_length=200)
-    body = models.TextField("contenido", blank=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    class Meta:
-        ordering = ("-created_at",)
-        verbose_name = "nota"
-        verbose_name_plural = "notas"
-
-    def __str__(self):
-        return self.title
-```
-
-```bash
-python manage.py makemigrations core
-python manage.py migrate
-```
-
-### 4.2 Admin
-
-📄 **`core/admin.py`**
+📄 **`config/urls.py`**
 
 ```python
 from django.contrib import admin
-from .models import Note
+from django.urls import include, path
+from security.views import InicioTemplate
 
-@admin.register(Note)
-class NoteAdmin(admin.ModelAdmin):
-    list_display = ("id", "title", "owner", "created_at")
-    list_filter = ("owner",)
-    search_fields = ("title", "body", "owner__username")
-```
-
-### 4.3 Formulario
-
-📄 **`core/forms.py`**
-
-```python
-from django import forms
-from .models import Note
-
-class NoteForm(forms.ModelForm):
-    class Meta:
-        model = Note
-        fields = ("title", "body")
-        widgets = {
-            "title": forms.TextInput(attrs={"class": "form-control", "placeholder": "Título"}),
-            "body": forms.Textarea(attrs={"class": "form-control", "placeholder": "Contenido", "rows": 3}),
-        }
-```
-
-### 4.4 Vistas
-
-📄 **`core/views.py`**
-
-```python
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.urls import reverse_lazy
-from django.views.generic import CreateView, DeleteView, ListView
-from .forms import NoteForm
-from .models import Note
-
-
-class DashboardView(LoginRequiredMixin, ListView):
-    model = Note
-    template_name = "core/dashboard.html"
-    context_object_name = "notes"
-
-    def get_queryset(self):
-        return Note.objects.filter(owner=self.request.user)
-
-
-class NoteCreateView(LoginRequiredMixin, CreateView):
-    model = Note
-    form_class = NoteForm
-    template_name = "core/note_form.html"
-    success_url = reverse_lazy("dashboard")
-
-    def form_valid(self, form):
-        form.instance.owner = self.request.user
-        return super().form_valid(form)
-
-
-class NoteDeleteView(LoginRequiredMixin, DeleteView):
-    model = Note
-    success_url = reverse_lazy("dashboard")
-
-    def get_queryset(self):
-        return Note.objects.filter(owner=self.request.user)
-```
-
-### 4.5 URLs
-
-📄 **`core/urls.py`**
-
-```python
-from django.urls import path
-from .views import DashboardView, NoteCreateView, NoteDeleteView
-
-app_name = "core"
 urlpatterns = [
-    path("", DashboardView.as_view(), name="dashboard"),
-    path("nueva/", NoteCreateView.as_view(), name="note_create"),
-    path("eliminar/<int:pk>/", NoteDeleteView.as_view(), name="note_delete"),
+    path("admin/", admin.site.urls),
+    path("", InicioTemplate.as_view(), name="home"),
+    path("security/", include("security.urls")),
 ]
 ```
 
-### 4.6 Templates de core
+> 💡 **LogoutView** usa `LOGOUT_REDIRECT_URL` de `settings.py` (`/security/login/`). Al cerrar sesión redirige al login.
 
-📄 **`core/templates/core/dashboard.html`**
-
-```html
-{% extends "base.html" %}
-{% block title %}Dashboard{% endblock %}
-{% block content %}
-<div class="d-flex justify-content-between align-items-center mb-4">
-  <h2>Mis notas</h2>
-  <a href="{% url 'core:note_create' %}" class="btn btn-success">+ Nueva nota</a>
-</div>
-{% if notes %}
-  <div class="row">
-    {% for note in notes %}
-      <div class="col-md-4 mb-3">
-        <div class="card">
-          <div class="card-body">
-            <h5 class="card-title">{{ note.title }}</h5>
-            <p class="card-text">{{ note.body|linebreaksbr }}</p>
-            <p class="text-muted small">{{ note.created_at|date:"d/m/Y H:i" }}</p>
-            <form method="post" action="{% url 'core:note_delete' note.pk %}" style="display:inline">
-              {% csrf_token %}
-              <button type="submit" class="btn btn-sm btn-danger">Eliminar</button>
-            </form>
-          </div>
-        </div>
-      </div>
-    {% endfor %}
-  </div>
-{% else %}
-  <div class="alert alert-info">No tienes notas aún. ¡Crea tu primera nota!</div>
-{% endif %}
-{% endblock %}
-```
-
-📄 **`core/templates/core/note_form.html`**
-
-```html
-{% extends "base.html" %}
-{% block title %}Nueva nota{% endblock %}
-{% block content %}
-<div class="row justify-content-center">
-  <div class="col-md-6">
-    <h2 class="mb-4">Nueva nota</h2>
-    <form method="post">
-      {% csrf_token %}
-      {{ form.as_p }}
-      <button type="submit" class="btn btn-primary">Guardar</button>
-      <a href="{% url 'core:dashboard' %}" class="btn btn-secondary">Cancelar</a>
-    </form>
-  </div>
-</div>
-{% endblock %}
-```
-
-✅ **Checkpoint:** dashboard muestra notas, crear y eliminar funcionan.
+✅ **Checkpoint:** `/security/login/` y `/` (home protegido) funcionan.
 
 ---
 
-## 5. Fase 8 — Template base (Bootstrap 5)
+## 4. Fase 7 — Template base con Bootstrap
 
 📄 **`templates/base.html`**
 
@@ -526,23 +448,20 @@ urlpatterns = [
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{% block title %}Notas App{% endblock %}</title>
+  <title>{% block title %}App{% endblock %}</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
     <div class="container">
-      <a class="navbar-brand" href="{% url 'core:dashboard' %}">Notas App</a>
+      <a class="navbar-brand" href="{% url 'home' %}">App</a>
       <div class="navbar-nav ms-auto">
         {% if user.is_authenticated %}
-          <span class="nav-link text-light">{{ user.username }}</span>
-          <form method="post" action="{% url 'accounts:logout' %}" class="d-inline">
+          <span class="nav-link text-light">{{ user.get_full_name }}</span>
+          <form method="post" action="{% url 'security:logout' %}" class="d-inline">
             {% csrf_token %}
             <button type="submit" class="btn nav-link text-danger">Salir</button>
           </form>
-        {% else %}
-          <a class="nav-link" href="{% url 'accounts:login' %}">Login</a>
-          <a class="nav-link" href="{% url 'accounts:register' %}">Registro</a>
         {% endif %}
       </div>
     </div>
@@ -553,47 +472,30 @@ urlpatterns = [
 </html>
 ```
 
-### 5.1 Enrutamiento principal
-
-📄 **`config/urls.py`**
-
-```python
-from django.contrib import admin
-from django.urls import include, path
-
-urlpatterns = [
-    path("admin/", admin.site.urls),
-    path("auth/", include("accounts.urls")),
-    path("dashboard/", include("core.urls")),
-    path("", include("core.urls")),  # raíz → dashboard
-]
-```
-
 ---
 
-## 6. Probar el sistema completo
+## 5. Probar el sistema
 
 ```bash
 python manage.py runserver
 ```
 
-| Prueba | URL |
-|---|---|
-| Admin | `http://127.0.0.1:8000/admin/` |
-| Registro | `http://127.0.0.1:8000/auth/register/` |
-| Login | `http://127.0.0.1:8000/auth/login/` |
-| Dashboard | `http://127.0.0.1:8000/dashboard/` |
-
-**Flujo:** registrar usuario → login → crear nota → eliminar nota → logout.
+| Prueba | URL | Esperado |
+|---|---|---|
+| Admin | `http://127.0.0.1:8000/admin/` | Login con superusuario |
+| Login | `http://127.0.0.1:8000/security/login/` | Login con email y contraseña (AJAX) |
+| Home | `http://127.0.0.1:8000/` | Dashboard protegido con datos del usuario |
+| Logout | Cerrar sesión | Redirige a login |
 
 ---
 
 ## Cierre
 
-- [x] Apps `accounts` y `core` creadas con `startapp`.
-- [x] Modelo User personalizado (AbstractBaseUser + CustomUserManager).
-- [x] Autenticación completa (registro, login, logout).
-- [x] CRUD de notas con Bootstrap 5.
-- [x] Template base reutilizable.
+- [x] App `security/` creada con `startapp`.
+- [x] Modelo `User` personalizado (AbstractBaseUser + PermissionsMixin + CustomUserManager).
+- [x] Login con email (`USERNAME_FIELD = "email"`).
+- [x] Admin con fieldsets.
+- [x] Vista Home protegida con `LoginRequiredMixin`.
+- [x] Template base Bootstrap reutilizable.
 
 **➡️ [Parte 3 — UML + Verificación Final](./guia-laboratorio-03.md)**

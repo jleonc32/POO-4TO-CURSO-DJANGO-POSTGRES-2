@@ -1,27 +1,27 @@
 # Guía de Laboratorio 03 — UML + Verificación Final
 
-> **Parte 3 de 3** · ⏱ Duración estimada: **45 min – 1 hora**
+> **Parte 3 de 3** · ⏱ **45 min – 1 hora**
 > **Asignatura:** Programación Orientada a Objetos (4to curso)
-> **Prerrequisito:** [Parte 2 — Backend MVT](./guia-laboratorio-02.md) completada.
-> **Alcance:** generar diagramas UML y verificar el sistema completo.
+> **Prerrequisito:** [Parte 2](./guia-laboratorio-02.md) completada (módulo seguridad funcional).
+> **Alcance:** diagramas UML del sistema de autenticación y verificación final.
 
 | ⬅️ Anterior | 📘 Esta guía |
 |---|---|
-| [02 — Backend MVT](./guia-laboratorio-02.md) | **03** UML + Verificación |
+| [02 — Módulo Seguridad](./guia-laboratorio-02.md) | **03** UML + Verificación |
 
 ---
 
-## 1. Fase 9 — Diagramas UML (PlantUML)
+## 1. Fase 8 — Diagramas UML (PlantUML)
 
-> 💡 **Concepto POO:** un diagrama UML es un contrato visual del sistema. Muestra estructura (clases, ER) y comportamiento (secuencia).
+> 💡 **Concepto POO:** un diagrama UML captura la estructura (clases) y el comportamiento (secuencia) del sistema.
 
-### 1.1 Instalar extensión PlantUML
+### 1.1 Instalar PlantUML en VSCode
 
-En VSCode: `Ctrl + Shift + X` → busque **PlantUML** (jebbs) → instale. Para previsualizar: abra el `.puml` y pulse `Alt + D`.
+`Ctrl + Shift + X` → busque **PlantUML** (jebbs) → instale. Previsualizar: `Alt + D` con el `.puml` abierto.
 
 ### 1.2 Crear archivos
 
-En `docs/uml/` cree 4 archivos:
+En `docs/uml/` cree 4 archivos vacíos:
 
 ```
 docs/uml/
@@ -40,26 +40,26 @@ docs/uml/
 title Arquitectura Monolito MVT
 
 node "Navegador" as Browser {
-  component "HTML + Bootstrap" as HTML
+  component "HTML + Bootstrap + JS" as Frontend
 }
 
 node "Servidor Django" as Server {
-  component "URL Dispatcher" as URLs
-  component "Views (lógica)" as Views
-  component "Templates (HTML)" as Templates
-  component "Models + ORM" as Models
+  component "URL Dispatcher\n(config/urls.py)" as URLs
+  component "Views\n(lógica de negocio)" as Views
+  component "Templates\n(HTML dinámico)" as Templates
+  component "Models + ORM\n(abstracción de datos)" as Models
 }
 
 node "Base de datos" as DB {
   database "MySQL" as MySQL
 }
 
-Browser --> Server : HTTP
-URLs --> Views : enruta
-Views --> Models : consulta
+Browser --> Server : HTTP (GET/POST/JSON)
+Server --> Browser : HTTP Response (HTML/JSON)
+URLs --> Views : enruta petición
+Views --> Models : consulta/guarda
+Views --> Templates : renderiza HTML
 Models --> MySQL : SQL
-Views --> Templates : renderiza
-Server --> Browser : HTML
 @enduml
 ```
 
@@ -69,35 +69,42 @@ Server --> Browser : HTML
 
 ```plantuml
 @startuml 02-clases
-title Clases del dominio
+title Clases del módulo seguridad
 
-class User <<accounts>> {
-  - id: int
+class User <<security>> {
+  - pkid: BigAutoField <<PK>>
+  - id: UUIDField <<unique>>
   - username: str
   - email: str
+  - first_name: str
+  - last_name: str
   - password: str
-  - created_at: datetime
-}
-
-class Note <<core>> {
-  - id: int
-  - title: str
-  - body: text
-  - owner: FK -> User
+  - is_active: bool
+  - is_staff: bool
+  - date_joined: datetime
   - created_at: datetime
   - updated_at: datetime
+  - foto: ImageField
+  + get_full_name: str
 }
 
-class CustomUserManager <<accounts>>
-class NoteForm <<core>>
-class DashboardView <<core>>
-class NoteCreateView <<core>>
-class NoteDeleteView <<core>>
+class CustomUserManager <<security>> {
+  + create_user(username, first_name, last_name, email, password): User
+  + create_superuser(username, first_name, last_name, email, password): User
+}
 
-User "1" *-- "0..*" Note : owns
+class LoginPageView <<security>> {
+  + get(): HTML
+  + post(): JsonResponse
+}
+
+class InicioTemplate <<security>> {
+  + get(): HTML
+}
+
 CustomUserManager ..> User : crea
-DashboardView ..> Note
-NoteCreateView ..> NoteForm
+LoginPageView ..> User : autentica
+InicioTemplate ..> User : muestra datos
 @enduml
 ```
 
@@ -107,29 +114,24 @@ NoteCreateView ..> NoteForm
 
 ```plantuml
 @startuml 03-er-database
-title Modelo ER — MySQL
+title Modelo ER — Tabla security_user
 
-entity "users" as users {
-  *id : BIGINT <<PK>>
+entity "security_user" as users {
+  *pkid : BIGINT <<PK>>
+  *id : UUID <<UNIQUE>>
   *username : VARCHAR(150) <<UNIQUE>>
   *email : VARCHAR(254) <<UNIQUE>>
   *password : VARCHAR(128)
+  *first_name : VARCHAR(50)
+  *last_name : VARCHAR(50)
   *is_active : BOOLEAN
   *is_staff : BOOLEAN
   *date_joined : DATETIME
   *created_at : DATETIME
-}
-
-entity "notes" as notes {
-  *id : BIGINT <<PK>>
-  *title : VARCHAR(200)
-  *body : TEXT
-  *owner_id : BIGINT <<FK>>
-  *created_at : DATETIME
   *updated_at : DATETIME
+  foto : VARCHAR(1024)
+  last_login : DATETIME
 }
-
-users ||--o{ notes : "1:N"
 @enduml
 ```
 
@@ -139,33 +141,40 @@ users ||--o{ notes : "1:N"
 
 ```plantuml
 @startuml 04-secuencia-login
-title Secuencia — Login MVT
+title Secuencia — Login con AJAX (MVT)
 
 actor Usuario
 participant "Navegador" as Browser
-participant "URL Dispatcher" as URLs
-participant "LoginView" as View
-participant "Auth Backend" as Auth
-participant "Template" as Template
+participant "LoginPageView\n(security/views.py)" as View
+participant "Authentication\nBackend" as Auth
+participant "Template\nlogin.html" as Template
 database "MySQL" as DB
 
-Usuario -> Browser: usuario y contraseña
-Browser -> URLs: POST /auth/login/
-URLs -> View: LoginView
-View -> Auth: authenticate(email, password)
-Auth -> DB: SELECT * FROM users
-DB --> Auth: row
-alt válido
-  Auth --> View: user
-  View --> Browser: Redirect /dashboard/
-else inválido
-  View -> Template: render con error
-  Template --> Browser: HTML error
+Usuario -> Browser: email y contraseña
+Browser -> View: POST /security/login/ (JSON o FormData)
+note right: Fetch API con X-CSRFToken
+
+View -> View: detecta content-type\n(JSON vs form)
+View -> Auth: authenticate(request, email, password)
+Auth -> DB: SELECT * FROM security_user WHERE email=?
+DB --> Auth: row (password hash)
+
+alt credenciales válidas + usuario activo
+  Auth --> View: user object
+  View -> View: login(request, user)
+  View --> Browser: 200 {"resp": True, "user": {...}}
+  Browser -> Browser: window.location.href = "/"
+else usuario inactivo
+  View --> Browser: 403 {"resp": False, "error": "Usuario no habilitado"}
+else credenciales incorrectas
+  View --> Browser: 400 {"resp": False, "error": "Credenciales incorrectas"}
+else error interno
+  View --> Browser: 500 {"resp": False, "error": "Error interno"}
 end
 @enduml
 ```
 
-✅ **Checkpoint:** 4 diagramas creados y renderizan sin errores.
+✅ **Checkpoint:** 4 diagramas renderizan sin errores (Alt+D en VSCode).
 
 ---
 
@@ -181,15 +190,14 @@ python manage.py runserver
 |---|---|---|
 | 1 | `python manage.py check` sin errores | ☐ |
 | 2 | `showmigrations` todo `[X]` | ☐ |
-| 3 | Admin en `/admin/` | ☐ |
-| 4 | Registro en `/auth/register/` | ☐ |
-| 5 | Login con email y contraseña | ☐ |
-| 6 | Dashboard muestra notas del usuario | ☐ |
-| 7 | Crear nota funciona | ☐ |
-| 8 | Eliminar nota funciona | ☐ |
-| 9 | Logout redirige al login | ☐ |
-| 10 | Sin sesión → redirect a login | ☐ |
-| 11 | Diagramas UML renders OK | ☐ |
+| 3 | Admin en `/admin/` muestra User con foto | ☐ |
+| 4 | Login en `/security/login/` con AJAX (email+pass) | ☐ |
+| 5 | Login exitoso redirige a `/` (home) | ☐ |
+| 6 | Home `/` muestra nombre completo y email | ☐ |
+| 7 | Logout redirige a `/security/login/` | ☐ |
+| 8 | Sin sesión → al visitar `/` redirige a login | ☐ |
+| 9 | Error con credenciales inválidas (JS muestra alerta) | ☐ |
+| 10 | Diagramas UML renderizan (Alt+D) | ☐ |
 
 ---
 
@@ -197,17 +205,14 @@ python manage.py runserver
 
 | Parte | Resultado |
 |---|---|
-| [01](./guia-laboratorio-01.md) | Django + MySQL |
-| [02](./guia-laboratorio-02.md) | MVT: modelos, vistas, templates, auth |
-| **03** | UML + verificación |
+| [01](./guia-laboratorio-01.md) | Django + MySQL (`config/` settings) |
+| [02](./guia-laboratorio-02.md) | Módulo seguridad: User personalizado + login AJAX |
+| **03** | UML + verificación final |
 
-### Escalabilidad futura (DRF)
+### Escalabilidad futura
 
-Este proyecto está listo para agregar Django REST Framework:
-
-1. `pip install djangorestframework djangorestframework-simplejwt`
-2. Agregar `rest_framework` a `INSTALLED_APPS`
-3. Crear `serializers.py` + `api_views.py` en cada app
-4. Las vistas HTML actuales siguen funcionando en paralelo bajo `/admin/` y `/dashboard/`
+- **Agregar más apps:** `startapp` + registrar en `LOCAL_APPS`.
+- **Agregar API REST:** instalar DRF + SimpleJWT, crear serializers.
+- **Agregar registro de usuarios:** crear `RegisterView` + formulario.
 
 *Fin del laboratorio.*
