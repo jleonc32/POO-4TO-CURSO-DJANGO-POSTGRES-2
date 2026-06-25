@@ -7,7 +7,7 @@
 
 | ⬅️ Anterior | 📘 Esta guía | ➡️ Siguiente |
 |---|---|---|
-| [01 — Configuración base](./guia-laboratorio-01.md) | **02** Módulo Seguridad | [03 — UML + Verificación](./guia-laboratorio-03.md) |
+| [01 — Configuración base](./guia-laboratorio-01.md) | **02** Módulo Seguridad | [**03 — Diagramas UML**](./guia-laboratorio-03.md) |
 
 ---
 
@@ -100,13 +100,13 @@ class CustomUserManager(BaseUserManager):
             self.email_validator(email)
         else:
             raise ValueError("El email es obligatorio")
+        extra_fields.setdefault("is_staff", False)
+        extra_fields.setdefault("is_superuser", False)
         user = self.model(
             username=username, first_name=first_name, last_name=last_name,
             email=email, **extra_fields,
         )
         user.set_password(password)
-        extra_fields.setdefault("is_staff", False)
-        extra_fields.setdefault("is_superuser", False)
         user.save(using=self._db)
         return user
 
@@ -192,6 +192,7 @@ AUTH_USER_MODEL = "security.User"
 ```bash
 rm -f security/migrations/0001_*.py
 mysql -u root -p -e "DROP DATABASE ventas_db_local; CREATE DATABASE ventas_db_local CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+python manage.py makemigrations
 python manage.py migrate
 python manage.py createsuperuser
 # Username: admin | Email: admin@example.com | Password: ********
@@ -498,4 +499,4 @@ python manage.py runserver
 - [x] Vista Home protegida con `LoginRequiredMixin`.
 - [x] Template base Bootstrap reutilizable.
 
-**➡️ [Parte 3 — UML + Verificación Final](./guia-laboratorio-03.md)**
+➡️ [**Parte 3 — Diagramas UML del Sistema**](./guia-laboratorio-03.md)

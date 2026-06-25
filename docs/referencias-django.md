@@ -1,10 +1,12 @@
 # Referencia del Framework Django — MVT, componentes y arquitectura
 
-> **Documento de referencia** (no se ejecuta paso a paso como las guías 01–03). Léalo **antes** de la práctica para entender los conceptos, o **durante** la práctica cuando una guía mencione un componente que quiera profundizar.
+> **Documento de referencia** (no se ejecuta paso a paso como las guías de laboratorio). Léalo **antes** de la práctica para entender los conceptos, o **durante** la práctica cuando una guía mencione un componente que quiera profundizar.
 >
 > **Audiencia:** estudiantes de **Programación Orientada a Objetos (4to curso)** que ya saben Python y están dando sus primeros pasos con Django.
 >
 > **Enfoque:** el *porqué* detrás del *cómo*. Cada componente se explica con un diagrama ASCII, una tabla comparativa y un ejemplo mínimo.
+>
+> ⚠️ **Nota sobre DRF:** Este documento incluye secciones sobre Django REST Framework (DRF) como referencia teórica general. **El proyecto de laboratorio (guías 01–11) usa exclusivamente Django MVT (Vistas Basadas en Clases + Templates).** Las secciones de DRF son complementarias y no necesarias para completar las guías.
 
 ---
 

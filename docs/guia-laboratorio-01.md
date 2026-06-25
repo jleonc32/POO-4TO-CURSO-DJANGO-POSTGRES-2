@@ -6,7 +6,7 @@
 
 | ⬅️ Anterior | 📘 Esta guía | ➡️ Siguiente |
 |---|---|---|
-| — | **01** Configuración base | [02 — Módulo Seguridad (User + Auth)](./guia-laboratorio-02.md) |
+| — | **01** Configuración base | [**02 — Módulo Seguridad (User + Auth)**](./guia-laboratorio-02.md) |
 
 ---
 
@@ -249,10 +249,6 @@ MEDIA_ROOT = BASE_DIR / 'mediafiles'
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
-#CORS_ALLOW_ALL_ORIGINS = True
-CRISPY_TEMPLATE_PACK = 'bootstrap4'
-
-
 LOGIN_URL = "/security/login/"
 LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/security/login/"
@@ -303,4 +299,4 @@ python manage.py createsuperuser
 - [x] `ATOMIC_REQUESTS = True` (cada vista envuelta en transacción).
 - [x] Superusuario creado.
 
-**➡️ [Parte 2 — Módulo Seguridad (User + Auth)](./guia-laboratorio-02.md)**
+➡️ [**Parte 2 — Módulo Seguridad (User + Auth)**](./guia-laboratorio-02.md)

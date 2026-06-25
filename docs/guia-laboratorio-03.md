@@ -1,13 +1,12 @@
-# Guía de Laboratorio 03 — UML + Verificación Final
+# Guía de Laboratorio 03 — Diagramas UML del Sistema
 
-> **Parte 3 de 3** · ⏱ **45 min – 1 hora**
-> **Asignatura:** Programación Orientada a Objetos (4to curso)
+> **Parte 3** · ⏱ **45 min – 1 hora**
 > **Prerrequisito:** [Parte 2](./guia-laboratorio-02.md) completada (módulo seguridad funcional).
-> **Alcance:** diagramas UML del sistema de autenticación y verificación final.
+> **Alcance:** diagramas UML del sistema de autenticación.
 
-| ⬅️ Anterior | 📘 Esta guía |
-|---|---|
-| [02 — Módulo Seguridad](./guia-laboratorio-02.md) | **03** UML + Verificación |
+| ⬅️ Anterior | 📘 Esta guía | ➡️ Siguiente |
+|---|---|---|
+| [02 — Módulo Seguridad](./guia-laboratorio-02.md) | **03** UML | [**03b — Login Profesional**](./guia-laboratorio-03b.md) |
 
 ---
 
@@ -25,18 +24,18 @@ En `docs/uml/` cree 4 archivos vacíos:
 
 ```
 docs/uml/
-├── 01-despliegue.puml
-├── 02-clases.puml
-├── 03-er-database.puml
-└── 04-secuencia-login.puml
+├── 03-despliegue.puml
+├── 03-clases-seguridad.puml
+├── 03-er-auth.puml
+└── 03-secuencia-login.puml
 ```
 
 ### 1.3 Diagrama de despliegue
 
-📄 **`docs/uml/01-despliegue.puml`**
+📄 **`docs/uml/03-despliegue.puml`**
 
 ```plantuml
-@startuml 01-despliegue
+@startuml 03-despliegue
 title Arquitectura Monolito MVT
 
 node "Navegador" as Browser {
@@ -65,10 +64,10 @@ Models --> MySQL : SQL
 
 ### 1.4 Diagrama de clases
 
-📄 **`docs/uml/02-clases.puml`**
+📄 **`docs/uml/03-clases-seguridad.puml`**
 
 ```plantuml
-@startuml 02-clases
+@startuml 03-clases-seguridad
 title Clases del módulo seguridad
 
 class User <<security>> {
@@ -110,10 +109,10 @@ InicioTemplate ..> User : muestra datos
 
 ### 1.5 Modelo ER
 
-📄 **`docs/uml/03-er-database.puml`**
+📄 **`docs/uml/03-er-auth.puml`**
 
 ```plantuml
-@startuml 03-er-database
+@startuml 03-er-auth
 title Modelo ER — Tabla security_user
 
 entity "security_user" as users {
@@ -137,10 +136,10 @@ entity "security_user" as users {
 
 ### 1.6 Diagrama de secuencia (login)
 
-📄 **`docs/uml/04-secuencia-login.puml`**
+📄 **`docs/uml/03-secuencia-login.puml`**
 
 ```plantuml
-@startuml 04-secuencia-login
+@startuml 03-secuencia-login
 title Secuencia — Login con AJAX (MVT)
 
 actor Usuario
@@ -207,12 +206,8 @@ python manage.py runserver
 |---|---|
 | [01](./guia-laboratorio-01.md) | Django + MySQL (`config/` settings) |
 | [02](./guia-laboratorio-02.md) | Módulo seguridad: User personalizado + login AJAX |
-| **03** | UML + verificación final |
+| **03** | Diagramas UML del sistema |
 
-### Escalabilidad futura
+### Siguiente paso
 
-- **Agregar más apps:** `startapp` + registrar en `LOCAL_APPS`.
-- **Agregar API REST:** instalar DRF + SimpleJWT, crear serializers.
-- **Agregar registro de usuarios:** crear `RegisterView` + formulario.
-
-*Fin del laboratorio.*
+Continúa con la [**Guía 03b — Login Profesional**](./guia-laboratorio-03b.md) para mejorar la interfaz de inicio de sesión con Bootstrap 5, Axios y SOLID.
