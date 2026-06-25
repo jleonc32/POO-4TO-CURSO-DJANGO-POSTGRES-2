@@ -1,74 +1,82 @@
 # POO-4TO-CURSO-DJANGO-POSTGRES-REACT
 
-Laboratorio de **Programación Orientada a Objetos (4to curso)** — aplicación cliente/servidor full-stack con Django + React.
+Laboratorio de **Programación Orientada a Objetos (4to curso)** — aplicación web con Django + MySQL + Bootstrap 5.
 
 ## Stack
 
 | Capa | Tecnología |
 |---|---|
-| Backend | Django 5 · Django REST Framework · SimpleJWT · django-cors-headers |
-| Frontend | Vite · React 18 · TypeScript · React Router 6 · Axios |
-| Base de datos | PostgreSQL 14+ **o** MySQL 8 / MariaDB 10 (seleccionable por `.env`) |
-| Lenguajes | Python 3.12 · Node.js 20 LTS |
+| Backend | Django 6.0.6 · django-cors-headers |
+| Frontend | Django Templates · Bootstrap 5 · JavaScript ES6 · Axios |
+| Base de datos | MySQL 8 / MariaDB 10 (configurable por `.env`) |
+| Lenguajes | Python 3.12 |
+
+> **Nota:** El nombre del repositorio incluye "POSTGRES" por razones históricas. El proyecto actual usa MySQL.
 | Documentación | PlantUML (diagramas UML) |
 
 ## Estructura del repositorio
 
 ```
 .
-├── backend/         # servidor Django (se crea durante la práctica)
-├── frontend/        # cliente Vite + React (se crea durante la práctica)
+├── backend/         # servidor Django
+├── frontend/        # (reservado para frontend futuro)
 ├── docs/
+│   ├── ROADMAP.md
+│   ├── user-stories.md
+│   ├── diseno-facturacion.md
 │   ├── guia-laboratorio-01.md
 │   ├── guia-laboratorio-02.md
 │   ├── guia-laboratorio-03.md
+│   ├── guia-laboratorio-03b.md
+│   ├── guia-laboratorio-04.md
+│   ├── guia-laboratorio-05.md
 │   ├── caso-estudio-facturacion-analisis.md
 │   ├── caso-estudio-facturacion-implementacion.md
+│   ├── referencias-django.md
 │   └── uml/         # diagramas PlantUML
 └── scripts/         # automatización opcional
 ```
 
-## Guía de laboratorio
+## Guías de laboratorio
 
-La práctica se divide en **3 guías** que se siguen **en orden**. Cada guía termina con un *checkpoint* que el estudiante debe verificar antes de pasar a la siguiente.
+| # | Guía | Estado |
+|---|---|---|
+| [01](./docs/guia-laboratorio-01.md) | **Configuración base y proyecto Django** | ✅ Implementado |
+| [02](./docs/guia-laboratorio-02.md) | **App Security (User, Login, Admin)** | ✅ Implementado |
+| [03](./docs/guia-laboratorio-03.md) | **Diagramas UML** | ✅ Implementado |
+| [03b](./docs/guia-laboratorio-03b.md) | **Login Profesional (Bootstrap + Axios + SOLID)** | ✅ Implementado |
+| [04](./docs/guia-laboratorio-04.md) | **App Core (BaseModel + MenuItem + SoftDelete)** | 📄 Pendiente |
+| [05](./docs/guia-laboratorio-05.md) | **Panel Administrativo (Sidebar + Layout + Tags)** | 📄 Pendiente |
+| [06](./docs/guia-laboratorio-06.md) | **CRUD Usuarios + Roles (CBVs, búsqueda, paginación)** | 📄 Pendiente |
+| [07](./docs/guia-laboratorio-07.md) | **CRUD Catálogo (Categorías + Productos)** | 📄 Pendiente |
+| [08](./docs/guia-laboratorio-08.md) | **CRUD Clientes (búsqueda, validación única)** | 📄 Pendiente |
+| [09](./docs/guia-laboratorio-09.md) | **Facturación ACID (maestro-detalle, F(), IVA)** | 📄 Pendiente |
+| [10](./docs/guia-laboratorio-10.md) | **Dashboard + Reportes (Chart.js)** | 📄 Pendiente |
+| [11](./docs/guia-laboratorio-11.md) | **Verificación Final + Despliegue** | 📄 Pendiente |
 
-| # | Guía | Fases | Resultado al finalizar |
-|---|---|---|---|
-| [01](./docs/guia-laboratorio-01.md) | **Configuración base y proyecto Django** | 0 → 3 | Proyecto Django arrancando con BD conectada |
-| [02](./docs/guia-laboratorio-02.md) | **Backend Django (apps, modelos, API, JWT)** | 4 → 5 | API REST con JWT funcional |
-| [03](./docs/guia-laboratorio-03.md) | **Frontend React + UML + Verificación** | 7 → 10 + checklist | Sistema cliente/servidor completo + diagramas |
+> Cada guía termina con un *checkpoint*. Solo las marcadas como ✅ están implementadas en el repositorio.
 
-> **Recomendación:** complete la 01, verifique el checkpoint, y solo entonces pase a la 02. Cada guía referencia explícitamente la anterior y la siguiente.
+## Documentación del proyecto
+
+- [Roadmap completo](./docs/ROADMAP.md) — Planificación de 12 sprints con 46 User Stories
+- [User Stories para Jira](./docs/user-stories.md) — 46 HU con criterios de aceptación formato Given/When/Then
+- [Diseño del Módulo de Facturación](./docs/diseno-facturacion.md) — Modelo Maestro-Detalle ACID + UI profesional
+- [Referencia del Framework Django](./docs/referencias-django.md) — Companion teórico MVT, ORM, CBVs, POO
 
 ## Caso de Estudio — Sistema de Facturación
 
-Aplica el proceso completo de **Análisis OO → SOLID → UML → DER → Django → API REST → Transacciones ACID** sobre un caso Maestro-Detalle real.
+Aplica **Análisis OO → SOLID → UML → DER → Django → Transacciones ACID** sobre un caso Maestro-Detalle real.
 
 | Parte | Contenido | Duración |
 |---|---|---|
-| [📘 Análisis y Diseño OO](./docs/caso-estudio-facturacion-analisis.md) | Análisis de dominio, 5 clases, 8 reglas de negocio, SOLID, UML, ER | 1 – 1.5 h |
-| [📘 Implementación Django](./docs/caso-estudio-facturacion-implementacion.md) | Modelos, serializers, servicios transaccionales, ViewSets, API REST, pruebas | 1.5 – 2 h |
-
-> **Recomendación:** complete primero la Parte 1 (conceptos), verifique el checkpoint, y luego pase a la Parte 2 (código).
-
-## Documentación adicional
-
-- [Referencia del Framework Django — MVT, componentes y arquitectura](./docs/referencias-django.md)
-  Companion teórico de las 3 guías. Explica Django MVT, ORM, Views, DRF, Middleware, Settings y el mapeo a principios POO. Léalo **antes** de la práctica para tener el mapa mental completo.
+| [Análisis y Diseño OO](./docs/caso-estudio-facturacion-analisis.md) | Análisis de dominio, 5 clases, 8 reglas de negocio, SOLID, UML, ER | 1 – 1.5 h |
+| [Implementación Django](./docs/caso-estudio-facturacion-implementacion.md) | Modelos, servicios transaccionales, ViewSets, API, pruebas | 1.5 – 2 h |
 
 ## Requisitos
 
 - Windows 10/11 con PowerShell 5.1+
 - Python 3.12 (`python --version`)
-- Node.js 20 LTS (`node --version`)
-- PostgreSQL 14+ **o** MySQL 8 / MariaDB 10
-- Git, Visual Studio Code (extensiones: *Python*, *Pylance*, *ESLint*, *PlantUML*)
+- MySQL 8 / MariaDB 10
+- Git, Visual Studio Code (extensiones: *Python*, *Pylance*, *PlantUML*)
 
-> ¿Falta alguna herramienta? La **Fase 0 / Sección 2.1** de la guía 01 incluye los comandos `winget` para instalar todo lo necesario en Windows.
-
-## Inicio rápido
-
-1. Clone o descargue este repositorio en `D:\UNEMI\2026\PERIODO-ABRIL-JUNIO\POO\POO-4TO-CURSO-DJANGO-POSTGRES-REACT`.
-2. Abra la [Guía 01](./docs/guia-laboratorio-01.md) y siga las fases 0 a 3.
-3. Continúe con la [Guía 02](./docs/guia-laboratorio-02.md) (fases 4 y 5).
-4. Termine con la [Guía 03](./docs/guia-laboratorio-03.md) (fases 7 a 10 + verificación final).
+> ¿Falta alguna herramienta? La guía 01 incluye los comandos `winget` para instalar todo lo necesario en Windows.
