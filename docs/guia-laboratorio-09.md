@@ -57,7 +57,7 @@ invoicing/
 │   ├── invoice_form.html
 │   └── invoice_detail.html
 └── static/invoicing/js/
-    ├── invoice-service.py      (lógica de negocio — SRP)
+    ├── invoice-service.js      (lógica de negocio — SRP)
     ├── invoice-calculator.js   (cálculos financieros — SRP)
     └── invoice-form.js         (controlador DOM — SRP)
 ```
@@ -869,6 +869,8 @@ python manage.py makemigrations invoicing
 python manage.py migrate
 python manage.py check
 ```
+
+Debe mostrar: `System check identified no issues (0 silenced).`
 
 Actualiza el menú:
 

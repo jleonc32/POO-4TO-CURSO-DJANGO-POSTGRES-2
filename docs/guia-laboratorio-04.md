@@ -47,7 +47,7 @@ backend/
 │   └── settings.py               (MODIFICADO) — + 'core' en INSTALLED_APPS
 └── docs/
     └── uml/
-        └── 04-clases-modulo-navegacion.puml  (NUEVO)
+        └── 04-clases-modulo-navegacion.puml  (NUEVO — diagrama de navegación y permisos)
 ```
 
 ---

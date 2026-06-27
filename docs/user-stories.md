@@ -550,6 +550,40 @@ Prioridad: Alta/Media/Baja
 
 ---
 
+## Sprint 13 — Lab 12: Reportes PDF
+
+### HU-46 — Cierre Diario PDF
+
+- **Historia:** Como **administrador** quiero generar un reporte PDF de cierre diario con totales, métodos de pago y detalle de facturas
+- **Pts:** 3
+- **Prioridad:** Alta
+- **Criterios de Aceptación:**
+  1. Dado `/invoicing/reports/daily-close/`, cuando accedo, entonces descargo un PDF con el cierre del día actual
+  2. Dado el PDF de cierre, cuando lo abro, entonces veo: header corporativo, tarjetas de resumen (facturas, subtotal, IVA, total), tabla de métodos de pago con barras de distribución, detalle de cada factura, y totales
+  3. Dado el PDF, cuando hay facturas anuladas, entonces se muestran con badge "ANULADA" en rojo
+
+### HU-47 — Listado de Facturas PDF
+
+- **Historia:** Como **administrador** quiero generar un listado PDF de facturas por período con resumen de totales
+- **Pts:** 2
+- **Prioridad:** Alta
+- **Criterios de Aceptación:**
+  1. Dado `/invoicing/reports/invoice-list/?desde=...&hasta=...`, cuando accedo, entonces descargo un PDF con las facturas del período
+  2. Dado el PDF de listado, cuando lo abro, entonces veo: header corporativo, tarjetas de resumen, tabla con todas las facturas del período, totales acumulados
+  3. Dado el formulario en la página de reportes, cuando selecciono fechas, entonces el PDF se genera solo para ese rango
+
+### HU-48 — Descargar Factura PDF
+
+- **Historia:** Como **vendedor** quiero descargar una factura en PDF desde su detalle para entregarla al cliente
+- **Pts:** 2
+- **Prioridad:** Media
+- **Criterios de Aceptación:**
+  1. Dado el detalle de una factura, cuando veo la página, entonces hay un botón "Descargar PDF"
+  2. Dado que hago clic en "Descargar PDF", entonces se descarga un archivo con formato profesional: logo, datos del cliente, detalle de productos, IVA, totales
+  3. Dado el PDF descargado, cuando lo abro, entonces el nombre del archivo es `factura_FAC-XXXXXX.pdf`
+
+---
+
 ## Resumen para Jira
 
 | Sprint | HU IDs | Total Pts |
@@ -566,4 +600,5 @@ Prioridad: Alta/Media/Baja
 | Lab 09 | HU-34 al HU-38b | 21 |
 | Lab 10 | HU-39 al HU-42 | 9 |
 | Lab 11 | HU-43 al HU-45 | 6 |
-| | **Total** | **120** |
+| Lab 12 | HU-46 al HU-48 | 7 |
+| | **Total** | **127** |

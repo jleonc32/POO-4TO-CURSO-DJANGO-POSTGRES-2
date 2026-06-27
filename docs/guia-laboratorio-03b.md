@@ -519,14 +519,14 @@ class AuthService {
           <div class="branding-icon-box mb-4" aria-hidden="true">
             <i class="bi bi-receipt-cutoff display-3"></i>
           </div>
-          <h2 class="fw-bold mb-3">Gesti&oacute;n de Facturaci&oacute;n</h2>
+          <h2 class="fw-bold mb-3">Gestión de Facturación</h2>
           <p class="lead mb-4 opacity-75">
             Administre sus ventas, productos y clientes<br>
             de manera eficiente y profesional.
           </p>
           <div class="text-start d-inline-block">
             <div class="feature-item"><i class="bi bi-check-circle-fill me-2"></i>Control de inventario</div>
-            <div class="feature-item"><i class="bi bi-check-circle-fill me-2"></i>Facturaci&oacute;n electr&oacute;nica</div>
+            <div class="feature-item"><i class="bi bi-check-circle-fill me-2"></i>Facturación electrónica</div>
             <div class="feature-item"><i class="bi bi-check-circle-fill me-2"></i>Reportes en tiempo real</div>
           </div>
         </div>
@@ -539,7 +539,7 @@ class AuthService {
             <div class="brand-icon mb-3" aria-hidden="true">
               <i class="bi bi-receipt-cutoff fs-1"></i>
             </div>
-            <h1 class="h3 fw-bold mb-1">Sistema de Facturaci&oacute;n</h1>
+            <h1 class="h3 fw-bold mb-1">Sistema de Facturación</h1>
             <p class="text-muted small">Ingrese sus credenciales para continuar</p>
           </div>
 
@@ -547,9 +547,9 @@ class AuthService {
           <div id="loginError" class="alert alert-danger d-none" role="alert" aria-live="assertive"></div>
 
           <!-- Formulario -->
-          <form id="loginForm" novalidate aria-label="Formulario de inicio de sesi&oacute;n">
+          <form id="loginForm" novalidate aria-label="Formulario de inicio de sesión">
             <div class="mb-3">
-              <label for="loginEmail" class="form-label fw-semibold">Correo electr&oacute;nico</label>
+              <label for="loginEmail" class="form-label fw-semibold">Correo electrónico</label>
               <div class="input-group">
                 <span class="input-group-text" aria-hidden="true"><i class="bi bi-envelope"></i></span>
                 <input type="email"
@@ -566,9 +566,9 @@ class AuthService {
 
             <div class="mb-4">
               <div class="d-flex justify-content-between align-items-center">
-                <label for="loginPassword" class="form-label fw-semibold mb-0">Contrase&ntilde;a</label>
+                <label for="loginPassword" class="form-label fw-semibold mb-0">Contraseña</label>
                 <a href="#" class="text-decoration-none small" tabindex="-1"
-                   aria-label="Recuperar contrase&ntilde;a">¿Olvid&oacute; su contrase&ntilde;a?</a>
+                   aria-label="Recuperar contraseña">¿Olvidó su contraseña?</a>
               </div>
               <div class="input-group">
                 <span class="input-group-text" aria-hidden="true"><i class="bi bi-lock"></i></span>
@@ -583,7 +583,7 @@ class AuthService {
                 <button type="button"
                         id="passwordToggle"
                         class="input-group-text"
-                        aria-label="Mostrar u ocultar contrase&ntilde;a"
+                        aria-label="Mostrar u ocultar contraseña"
                         tabindex="-1">
                   <i class="bi bi-eye"></i>
                 </button>
@@ -598,12 +598,12 @@ class AuthService {
             <button type="submit"
                     id="loginSubmit"
                     class="btn btn-primary btn-lg w-100 btn-login">
-              <i class="bi bi-box-arrow-in-right me-2"></i>Iniciar sesi&oacute;n
+              <i class="bi bi-box-arrow-in-right me-2"></i>Iniciar sesión
             </button>
           </form>
 
           <p class="text-center text-muted mt-4 mb-0 small">
-            &copy; {% now "Y" %} Sistema de Facturaci&oacute;n. Todos los derechos reservados.
+            © {% now "Y" %} Sistema de Facturación. Todos los derechos reservados.
           </p>
         </div>
       </div>
@@ -747,9 +747,9 @@ class AuthService {
             <div class="display-6 mb-3">
               <i class="bi bi-grid text-success"></i>
             </div>
-            <h3 class="h5 fw-bold">M&oacute;dulos Disponibles</h3>
+            <h3 class="h5 fw-bold">Módulos Disponibles</h3>
             <p class="text-muted small mb-0">
-              Los m&oacute;dulos de facturaci&oacute;n estar&aacute;n disponibles pr&oacute;ximamente.
+              Los módulos de facturación estarán disponibles próximamente.
             </p>
           </div>
         </div>

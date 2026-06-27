@@ -26,7 +26,7 @@
 | Python 3.12.x | `python --version` |
 | pip | `pip --version` |
 | Git Bash | `bash --version` |
-| MySQL 8.0+ | `mysql --version` |
+| MySQL 8.0+ (principal) / PostgreSQL 15+ (opcional) | `mysql --version` / `psql --version` |
 
 > 💡 ¿Falta Python? <https://www.python.org/downloads/windows/> (marque *Add Python to PATH*).
 > 💡 ¿Falta MySQL? <https://dev.mysql.com/downloads/installer/>. Recuerde la contraseña de `root`.
@@ -110,6 +110,7 @@ Abra `http://127.0.0.1:8000/` — debe ver la página de inicio de Django.
 
 ```bash
 pip install python-decouple mysqlclient
+# Opcional: pip install psycopg2-binary  # para PostgreSQL
 ```
 
 ### 4.2 Crear `.env`
@@ -211,7 +212,7 @@ WSGI_APPLICATION = "config.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": config("DB_ENGINE", default="django.db.backends.mysql"),
-        "NAME": config("DB_NAME", default="ventas_db_local"),
+        "NAME": config("DB_DATABASE", default="ventas_db_local"),
         "USER": config("DB_USER", default="root"),
         "PASSWORD": config("DB_PASSWORD", default=""),
         "HOST": config("DB_HOST", default="localhost"),
@@ -240,9 +241,9 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-# STATICFILES_DIRS = (
-#     os.path.join(BASE_DIR, 'static'),
-# )
+STATICFILES_DIRS = [
+    BASE_DIR / 'static',
+]
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'mediafiles'

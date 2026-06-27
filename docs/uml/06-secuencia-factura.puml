@@ -7,7 +7,7 @@ participant "FacturaService" as Service
 participant "Producto\n(stock)" as Producto
 participant "Factura\n(maestro)" as Factura
 participant "DetalleFactura\n(detalle)" as Detalle
-database "Base\nde Datos" as DB
+database "MySQL / PostgreSQL" as DB
 
 Usuario -> View: POST /invoicing/create/\n{cliente_id, productos_json}
 View -> Service: FacturaService.crear(cliente, usuario, productos_data)

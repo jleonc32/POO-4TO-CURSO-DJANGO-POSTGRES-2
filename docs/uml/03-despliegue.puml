@@ -12,8 +12,8 @@ node "Servidor Django" as Server {
   component "Models + ORM\n(abstracción de datos)" as Models
 }
 
-node "Base de datos" as DB {
-  database "MySQL" as MySQL
+node "Base de datos" as DBNode {
+  database "MySQL / PostgreSQL" as DB
 }
 
 Browser --> Server : HTTP (GET/POST/JSON)
@@ -21,5 +21,5 @@ Server --> Browser : HTTP Response (HTML/JSON)
 URLs --> Views : enruta petición
 Views --> Models : consulta/guarda
 Views --> Templates : renderiza HTML
-Models --> MySQL : SQL
+Models --> DB : SQL
 @enduml

@@ -1,4 +1,4 @@
-# Guía de Laboratorio 10 — Dashboard + Reportes
+# Guía de Laboratorio 10 — Dashboard con Chart.js
 
 ## Objetivo
 
@@ -174,7 +174,7 @@ urlpatterns = [
   <div class="col-12 col-lg-8">
     <div class="card border-0 shadow-sm">
       <div class="card-body p-4">
-        <h6 class="fw-bold mb-3"><i class="bi bi-graph-up me-2"></i>Ventas &Uacute;ltimos 7 D&iacute;as</h6>
+        <h6 class="fw-bold mb-3"><i class="bi bi-graph-up me-2"></i>Ventas Últimos 7 Días</h6>
         <canvas id="ventasChart" height="200"></canvas>
       </div>
     </div>
@@ -184,7 +184,7 @@ urlpatterns = [
   <div class="col-12 col-lg-4">
     <div class="card border-0 shadow-sm">
       <div class="card-body p-4">
-        <h6 class="fw-bold mb-3"><i class="bi bi-clock-history me-2"></i>&Uacute;ltimas Facturas</h6>
+        <h6 class="fw-bold mb-3"><i class="bi bi-clock-history me-2"></i>Últimas Facturas</h6>
         {% for f in ultimas_facturas %}
         <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">
           <div>
@@ -240,6 +240,11 @@ new Chart(ctx, {
 
 ```bash
 python manage.py check
+```
+
+Debe mostrar: `System check identified no issues (0 silenced).`
+
+```bash
 python manage.py runserver
 ```
 

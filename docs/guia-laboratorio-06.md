@@ -310,7 +310,7 @@ urlpatterns = [
 {% extends "admin/base_admin.html" %}
 {% load static %}
 {% block title %}Usuarios{% endblock %}
-{% block page_title %}Gesti&oacute;n de Usuarios{% endblock %}
+{% block page_title %}Gestión de Usuarios{% endblock %}
 
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-3">
@@ -329,7 +329,7 @@ urlpatterns = [
     <table class="table table-hover align-middle mb-0">
       <thead class="table-light">
         <tr>
-          <th>Email</th><th>Nombre</th><th>Estado</th><th>&Uacute;ltima conexi&oacute;n</th><th></th>
+          <th>Email</th><th>Nombre</th><th>Estado</th><th>Última conexión</th><th></th>
         </tr>
       </thead>
       <tbody>
@@ -374,7 +374,7 @@ urlpatterns = [
     {% if page_obj.has_previous %}
       <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">Anterior</a></li>
     {% endif %}
-    <li class="page-item disabled"><span class="page-link">P&aacute;gina {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span></li>
+    <li class="page-item disabled"><span class="page-link">Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span></li>
     {% if page_obj.has_next %}
       <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">Siguiente</a></li>
     {% endif %}
@@ -431,7 +431,7 @@ document.getElementById('btnSubmit')?.addEventListener('click', function() {
 {% extends "admin/base_admin.html" %}
 {% load static %}
 {% block title %}Roles{% endblock %}
-{% block page_title %}Gesti&oacute;n de Roles{% endblock %}
+{% block page_title %}Gestión de Roles{% endblock %}
 
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-3">
@@ -487,7 +487,7 @@ document.getElementById('btnSubmit')?.addEventListener('click', function() {
       </div>
       <div class="mb-3">
         <label class="form-label fw-semibold">{{ form.permissions.label }}</label>
-        <div class="small text-muted mb-2">Seleccione uno o m&aacute;s permisos (Ctrl+clic para m&uacute;ltiples).</div>
+        <div class="small text-muted mb-2">Seleccione uno o más permisos (Ctrl+clic para múltiples).</div>
         {{ form.permissions }}
       </div>
       <div class="d-flex gap-2">
@@ -587,10 +587,17 @@ Agrega también la URL del perfil en el sidebar. En `core/context_processors.py`
 
 ---
 
-## Fase 6 — Verificación
+## Fase 5.5 — Verificar integridad
 
 ```bash
 python manage.py check
+```
+
+Debe mostrar: `System check identified no issues (0 silenced).`
+
+## Fase 6 — Probar el sistema
+
+```bash
 python manage.py runserver
 ```
 

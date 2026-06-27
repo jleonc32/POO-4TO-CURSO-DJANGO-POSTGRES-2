@@ -6,7 +6,7 @@ participant "Navegador" as Browser
 participant "LoginPageView\n(security/views.py)" as View
 participant "Authentication\nBackend" as Auth
 participant "Template\nlogin.html" as Template
-database "MySQL" as DB
+database "MySQL / PostgreSQL" as DB
 
 Usuario -> Browser: email y contraseña
 Browser -> View: POST /security/login/ (JSON o FormData)

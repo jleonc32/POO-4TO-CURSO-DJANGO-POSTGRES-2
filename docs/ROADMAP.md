@@ -1,4 +1,6 @@
-# Roadmap de Laboratorios — Sistema de Facturación
+# Roadmap de Laboratorios — Sistema de Facturación (Django MVT)
+
+> **Base de datos principal:** MySQL 8.0+ · **Opcional:** PostgreSQL 15+
 
 ## Metodología
 
@@ -9,10 +11,10 @@ Cada laboratorio representa un **Sprint** de 1 semana. Las **Historias de Usuari
 ## Proyecto completo
 
 ```
-Sprint 1  │ Lab 01 │ Configuración Django + MySQL                  ✅
-Sprint 2  │ Lab 02 │ App Security (User, Login, Admin)             ✅
-Sprint 3  │ Lab 03 │ Diagramas UML                                 ✅
-Sprint 4  │ Lab 03b│ Login Profesional (Bootstrap 5 + Axios)       ✅
+Sprint 1  │ Lab 01 │ Configuración Django + MySQL                  📄
+Sprint 2  │ Lab 02 │ App Security (User, Login, Admin)             📄
+Sprint 3  │ Lab 03 │ Diagramas UML                                 📄
+Sprint 4  │ Lab 03b│ Login Profesional (Bootstrap 5 + Axios)       📄
 ────────────────────────────────────────────────────────────────────
 Sprint 5  │ Lab 04 │ App Core (BaseModel, MenuItem, SoftDelete)    📄
 Sprint 6  │ Lab 05 │ Panel Admin (Sidebar + Layout + Context)      📄
@@ -20,8 +22,9 @@ Sprint 7  │ Lab 06 │ CRUD Usuarios + Roles y Permisos              📄
 Sprint 8  │ Lab 07 │ CRUD Catálogo (Categorías + Productos)        📄
 Sprint 9  │ Lab 08 │ CRUD Clientes                                 📄
 Sprint 10 │ Lab 09 │ Facturación Transaccional (ACID)              📄
-Sprint 11 │ Lab 10 │ Dashboard + Reportes                          📄
+Sprint 11 │ Lab 10 │ Dashboard + Card Resume + Chart.js          📄
 Sprint 12 │ Lab 11 │ Verificación Final + Despliegue               📄
+Sprint 13 │ Lab 12 │ Reportes Profesionales PDF                    📄
 ```
 
 ---
@@ -256,6 +259,8 @@ Sprint 12 │ Lab 11 │ Verificación Final + Despliegue               📄
 | HU-38 | Como **usuario** quiero ver el historial de facturas con filtros por fecha y cliente para consultar ventas anteriores | 3 |
 | HU-38b | Como **vendedor** quiero una interfaz profesional con buscador de productos, tabla de detalles editable en vivo y totales automáticos para facturar rápido | 3 |
 
+**Total Sprint 10: 21 pts**
+
 **Total Sprint: 21 pts**
 
 **Frontend:**
@@ -278,7 +283,7 @@ Sprint 12 │ Lab 11 │ Verificación Final + Despliegue               📄
 
 ---
 
-## LAB 10 — Dashboard + Reportes
+## LAB 10 — Dashboard con Chart.js
 
 **Objetivo:** Dashboard principal con tarjetas de resumen, gráficos (Chart.js), últimos movimientos, accesos rápidos.
 
@@ -319,6 +324,21 @@ Sprint 12 │ Lab 11 │ Verificación Final + Despliegue               📄
 **Total Sprint: 6 pts**
 
 ---
+## LAB 12 — Reportes Profesionales PDF
+
+**Objetivo:** Implementar generación de reportes PDF profesionales con xhtml2pdf, incluyendo cierre diario y listado de facturas por periodo.
+
+### User Stories
+
+| ID | Historia | Pts |
+|----|----------|:---:|
+| HU-46 | Como **administrador** quiero generar un reporte PDF de cierre diario con totales, métodos de pago y detalle de facturas | 3 |
+| HU-47 | Como **administrador** quiero generar un listado PDF de facturas por período con resumen de totales | 2 |
+| HU-48 | Como **vendedor** quiero descargar una factura en PDF desde su detalle para entregarla al cliente | 2 |
+
+**Total Sprint: 7 pts**
+
+---
 
 ## Resumen de User Stories
 
@@ -336,7 +356,8 @@ Sprint 12 │ Lab 11 │ Verificación Final + Despliegue               📄
 | 10 | Lab 09 | 6 | 21 |
 | 11 | Lab 10 | 4 | 9 |
 | 12 | Lab 11 | 3 | 6 |
-| | **Total** | **46** | **120** |
+| 13 | Lab 12 | 3 | 7 |
+| | **Total** | **49** | **127** |
 
 ---
 

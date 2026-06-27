@@ -240,7 +240,7 @@ path("customers/", include("customers.urls")),
 ```html
 {% extends "admin/base_admin.html" %}
 {% block title %}Clientes{% endblock %}
-{% block page_title %}Gesti&oacute;n de Clientes{% endblock %}
+{% block page_title %}Gestión de Clientes{% endblock %}
 
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-3">
@@ -331,6 +331,11 @@ exit()
 
 ```bash
 python manage.py check
+```
+
+Debe mostrar: `System check identified no issues (0 silenced).`
+
+```bash
 python manage.py runserver
 ```
 

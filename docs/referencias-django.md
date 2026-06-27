@@ -6,7 +6,7 @@
 >
 > **Enfoque:** el *porqué* detrás del *cómo*. Cada componente se explica con un diagrama ASCII, una tabla comparativa y un ejemplo mínimo.
 >
-> ⚠️ **Nota sobre DRF:** Este documento incluye secciones sobre Django REST Framework (DRF) como referencia teórica general. **El proyecto de laboratorio (guías 01–11) usa exclusivamente Django MVT (Vistas Basadas en Clases + Templates).** Las secciones de DRF son complementarias y no necesarias para completar las guías.
+> ⚠️ **Nota sobre DRF:** Este documento incluye secciones sobre Django REST Framework (DRF) como referencia teórica general. **El proyecto de laboratorio (guías 01–11) usa exclusivamente Django MVT (Vistas Basadas en Clases + Templates, sin React ni APIs REST).** Las secciones de DRF son complementarias y no necesarias para completar las guías.
 
 ---
 

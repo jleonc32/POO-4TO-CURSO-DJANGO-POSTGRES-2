@@ -88,6 +88,16 @@ Marca cada criterio como ✅ (cumple) o ❌ (no cumple). Todos deben estar en �
 | 35 | Lista de últimas 5 facturas con enlaces | ☐ |
 | 36 | Accesos directos a módulos principales | ☐ |
 
+### Módulo de Reportes (Lab 12)
+
+| # | Criterio | Estado |
+|---|----------|--------|
+| 37 | Página de reportes en `/invoicing/reports/` | ☐ |
+| 38 | Cierre diario PDF genera documento con header, tarjetas, tabla y totales | ☐ |
+| 39 | Listado PDF filtra por período desde/hasta | ☐ |
+| 40 | Botón "Descargar PDF" en detalle de factura | ☐ |
+| 41 | Tablas PDF con bordes, cabecera oscura y filas alternadas | ☐ |
+
 ---
 
 ## Fase 2 — Pruebas de Humo (Smoke Tests)
@@ -127,6 +137,10 @@ python manage.py runserver
 
 # 10. Dashboard
 # Verificar tarjetas, gráfico, últimas facturas
+
+# 11. Reportes PDF
+# Ir a /invoicing/reports/, generar cierre diario y listado PDF
+# Verificar que los PDFs se descargan con formato profesional
 ```
 
 ---
@@ -245,17 +259,20 @@ python manage.py showmigrations  # Todos deben tener [X]
 
 | Lab | Estado |
 |-----|--------|
-| Lab 01 — Config Django + MySQL | ✅ |
-| Lab 02 — App Security | ✅ |
-| Lab 03 — Diagramas UML | ✅ |
-| Lab 03b — Login Profesional | ✅ |
-| Lab 04 — App Core (BaseModel, MenuItem) | ✅ |
-| Lab 05 — Panel Administrativo | ✅ |
-| Lab 06 — CRUD Usuarios + Roles | ✅ |
-| Lab 07 — CRUD Catálogo | ✅ |
-| Lab 08 — CRUD Clientes | ✅ |
-| Lab 09 — Facturación ACID | ✅ |
-| Lab 10 — Dashboard + Reportes | ✅ |
-| Lab 11 — Verificación Final | ✅ |
+| Lab 01 — Config Django + MySQL | 📄 |
+| Lab 02 — App Security | 📄 |
+| Lab 03 — Diagramas UML | 📄 |
+| Lab 03b — Login Profesional | 📄 |
+| Lab 04 — App Core (BaseModel, MenuItem) | 📄 |
+| Lab 05 — Panel Administrativo | 📄 |
+| Lab 06 — CRUD Usuarios + Roles | 📄 |
+| Lab 07 — CRUD Catálogo | 📄 |
+| Lab 08 — CRUD Clientes | 📄 |
+| Lab 09 — Facturación ACID | 📄 |
+| Lab 10 — Dashboard + Chart.js | 📄 |
+| Lab 11 — Verificación Final | 📄 |
+| Lab 12 — Reportes Profesionales PDF | 📄 |
 
-**¡Proyecto completado!**
+➡️ **Siguiente:** [Lab 12 — Reportes Profesionales PDF](./guia-laboratorio-12.md)
+
+**¡Proyecto listo para comenzar!**

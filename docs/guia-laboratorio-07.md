@@ -336,7 +336,7 @@ urlpatterns = [
 {% extends "admin/base_admin.html" %}
 {% load static %}
 {% block title %}Categorías{% endblock %}
-{% block page_title %}Gesti&oacute;n de Categor&iacute;as{% endblock %}
+{% block page_title %}Gestión de Categorías{% endblock %}
 
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-3">
@@ -429,7 +429,7 @@ document.getElementById('btnSubmit')?.addEventListener('click', function() {
 {% extends "admin/base_admin.html" %}
 {% load static %}
 {% block title %}Productos{% endblock %}
-{% block page_title %}Gesti&oacute;n de Productos{% endblock %}
+{% block page_title %}Gestión de Productos{% endblock %}
 
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-3">
@@ -532,12 +532,17 @@ exit()
 
 ---
 
-## Fase 7 — Migrar y verificar
+## Fase 7 — Migrar, verificar y probar
 
 ```bash
 python manage.py makemigrations catalog
 python manage.py migrate
 python manage.py check
+```
+
+Debe mostrar: `System check identified no issues (0 silenced).`
+
+```bash
 python manage.py runserver
 ```
 

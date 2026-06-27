@@ -29,9 +29,9 @@ entity "clientes" as cli {
   --
   *cedula: VARCHAR(20) <<UNIQUE>>
   *nombre: VARCHAR(200)
+  *email: VARCHAR(254) <<UNIQUE>>
   *telefono: VARCHAR(20)
   *direccion: TEXT
-  *user_id: BIGINT <<FK UNIQUE>>
 }
 
 entity "facturas" as fac {
