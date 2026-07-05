@@ -69,7 +69,7 @@ WSGI_APPLICATION = "config.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": config("DB_ENGINE", default="django.db.backends.mysql"),
-        "NAME": config("DB_NAME", default="ventas_db_local"),
+        "NAME": config("DB_DATABASE", default="ventas_db_local"),
         "USER": config("DB_USER", default="root"),
         "PASSWORD": config("DB_PASSWORD", default=""),
         "HOST": config("DB_HOST", default="localhost"),
@@ -79,7 +79,6 @@ DATABASES = {
 }
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-AUTH_USER_MODEL = "security.User"
 
 AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
@@ -99,15 +98,16 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-# STATICFILES_DIRS = (
-#     os.path.join(BASE_DIR, 'static'),
-# )
+STATICFILES_DIRS = [
+    BASE_DIR / 'static',
+]
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'mediafiles'
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
+AUTH_USER_MODEL = "security.User"
 LOGIN_URL = "/security/login/"
 LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/security/login/"

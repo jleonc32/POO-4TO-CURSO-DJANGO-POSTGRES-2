@@ -26,9 +26,8 @@
 
   function setLoading(loading) {
     els.submit.disabled = loading;
-    els.submit.classList.toggle('skeleton-btn', loading);
     els.submit.innerHTML = loading
-      ? 'Ingresando...'
+      ? '<span class="spinner-border spinner-border-sm me-2"></span>Ingresando...'
       : '<i class="bi bi-box-arrow-in-right me-2"></i>Iniciar sesi\u00f3n';
   }
 
@@ -40,7 +39,6 @@
     if (!EMAIL_REGEX.test(email)) { showError('Ingrese un correo electr\u00f3nico v\u00e1lido'); els.email.focus(); return false; }
     if (!password) { showError('La contrase\u00f1a es requerida'); els.password.focus(); return false; }
     if (password.length < 4) { showError('La contrase\u00f1a debe tener al menos 4 caracteres'); els.password.focus(); return false; }
-
     return true;
   }
 

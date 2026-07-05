@@ -13,7 +13,7 @@ class UserAdmin(BaseUserAdmin):
     search_fields = ("email", "username", "first_name", "last_name")
     fieldsets = (
         (_("Credenciales"), {"fields": ("email", "password")}),
-        (_("Photo"), {"fields": ("foto",)}),
+        (_("Photo Information"), {"fields": ("foto",)}),
         (_("Información personal"), {"fields": ("username", "first_name", "last_name")}),
         (_("Permisos"), {"fields": ("is_active", "is_staff", "is_superuser", "groups", "user_permissions")}),
         (_("Fechas importantes"), {"fields": ("last_login", "date_joined")}),
