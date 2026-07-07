@@ -6,4 +6,5 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("", InicioTemplate.as_view(), name="home"),
     path("security/", include("security.urls")),
+    path("catalog/", include("catalog.urls")),
 ]
