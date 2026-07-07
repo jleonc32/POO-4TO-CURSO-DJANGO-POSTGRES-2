@@ -34,6 +34,7 @@ LOCAL_APPS = [
     "core",
     "security",
     "catalog",
+    "customers",
     
 ]
 
