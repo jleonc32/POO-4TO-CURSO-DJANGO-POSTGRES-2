@@ -29,6 +29,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     REQUIRED_FIELDS = ["username", "first_name", "last_name"]
 
     objects = CustomUserManager()
+    all_objects = models.Manager()
 
     class Meta:
         verbose_name = _("usuario")
@@ -41,3 +42,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     @property
     def get_full_name(self):
         return f"{self.first_name} {self.last_name}"
+    
+    def soft_delete(self):
+        self.is_active = False
+        self.save()
