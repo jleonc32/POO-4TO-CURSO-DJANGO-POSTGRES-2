@@ -5,7 +5,7 @@ from .models import Cliente
 class ClienteForm(forms.ModelForm):
     class Meta:
         model = Cliente
-        fields = ['cedula', 'nombre', 'email', 'telefono', 'direccion']
+        fields = ['cedula', 'nombre', 'email', 'telefono', 'direccion', 'is_active']
         widgets = {
             'cedula': forms.TextInput(attrs={'class': 'form-control', 'maxlength': '13'}),
             'nombre': forms.TextInput(attrs={'class': 'form-control'}),

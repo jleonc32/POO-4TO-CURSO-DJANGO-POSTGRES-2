@@ -37,7 +37,8 @@ class ClienteCreateView(PermissionRequiredMixin, CreateView):
 
 class ClienteUpdateView(PermissionRequiredMixin, UpdateView):
     permission_required = 'customers.change_cliente'
-    model = Cliente
+    #model = Cliente
+    queryset = Cliente.all_objects.all()
     form_class = ClienteForm
     template_name = 'customers/cliente_form.html'
     success_url = reverse_lazy('customers:cliente_list')
