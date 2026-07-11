@@ -104,10 +104,15 @@ class UserListView(PermissionRequiredMixin, ListView):
         qs = User.all_objects.all()
         q = self.request.GET.get('q', '').strip()
         if q:
-            qs = qs.filter(
-                Q(first_name__icontains=q) |
-                Q(last_name__icontains=q) |
-                Q(email__icontains=q)
+            
+            palabras = q.split()
+            
+            for palabra in palabras:
+                qs = qs.filter(
+                    Q(username__icontains=palabra) |
+                    Q(first_name__icontains=palabra) |
+                    Q(last_name__icontains=palabra) |
+                    Q(email__icontains=palabra)
             )
         return qs.order_by('-date_joined')
 

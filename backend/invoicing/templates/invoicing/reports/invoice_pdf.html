@@ -1,0 +1,112 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Factura {{ factura.numero }}</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'invoicing/css/invoice-pdf.css' %}" />
+</head>
+<body>
+    <div id="header_content">
+        <h2 style="margin: 0; color: #1e293b; font-size: 18px;">Comercial "El Porvenir"</h2>
+        <div style="font-size: 10px; color: #1e293b; margin-top: 5px; line-height: 1.4;">
+            SISTEMA DE FACTURACION<br>
+            RUC: 1799999999001 | Av. Principal s/n | Tel: 0999999999
+        </div>
+    </div>
+    <div id="footer_content" style="text-align: center; font-size: 8px; color: #94a3b8; font-family: 'Segoe UI', Arial, sans-serif;">
+        Página <pdf:pagenumber> de <pdf:pagecount>
+    </div>
+    <div class="brand-header">
+        <h1>Sistema de Facturación</h1>
+        <div class="brand-sub">FACTURA N° {{ factura.numero }}</div>
+        <div class="brand-meta">Emisión: {{ factura.fecha_emision|date:"d/m/Y H:i" }}</div>
+    </div>
+
+    {% if not factura.is_active %}
+    <div class="text-center" style="margin-bottom: 10px;">
+        <span class="badge badge-danger" style="font-size: 10px; padding: 4px 10px;">*** DOCUMENTO ANULADO ***</span>
+    </div>
+    {% endif %}
+
+    <div class="section-title">Datos del Comprobante</div>
+    
+    <table style="width: 100%; margin-bottom: 15px; font-size: 9px; line-height: 1.5;">
+        <tr>
+            <td style="width: 60%; vertical-align: top;">
+                <span class="fw-bold">Cliente:</span> {{ factura.cliente.nombre }}<br>
+                <span class="fw-bold">RUC/Cédula:</span> {{ factura.cliente.cedula }}<br>
+                <span class="fw-bold">Email:</span> {{ factura.cliente.email|default:"N/A" }}
+            </td>
+            <td style="width: 40%; text-align: right; vertical-align: top;">
+                <span class="fw-bold">Vendedor:</span> {{ factura.usuario.get_full_name|default:factura.usuario.username }}<br>
+                <span class="fw-bold">Método de Pago:</span> {{ factura.metodo_pago }}<br>
+                <span class="fw-bold">Estado:</span> 
+                {% if factura.is_active %}
+                    <span class="badge badge-success">ACTIVA</span>
+                {% else %}
+                    <span class="badge badge-danger">ANULADA</span>
+                {% endif %}
+            </td>
+        </tr>
+    </table>
+
+    <div class="section-title">Detalle de Productos</div>
+    
+    <!-- Usando tu clase table.data -->
+    <table class="data">
+        <thead>
+            <tr>
+                <th style="width: 35%; text-align: left; padding: 6px;">Producto</th>
+                <th style="width: 10%; text-align: center; padding: 6px;">Cant.</th>
+                <th style="width: 15%; text-align: right; padding: 6px;">P/U</th>
+                <th style="width: 10%; text-align: center; padding: 6px;">Desc.%</th>
+                <th style="width: 15%; text-align: right; padding: 6px;">Subtotal</th>
+                <th style="width: 15%; text-align: right; padding: 6px;">Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for d in detalles %}
+            <tr>
+                <td style="padding: 5px;">{{ d.producto.nombre }}</td>
+                <td class="text-center" style="padding: 5px;">{{ d.cantidad }}</td>
+                <td class="text-end" style="padding: 5px;">${{ d.precio_unitario|floatformat:2 }}</td>
+                <td class="text-center" style="padding: 5px;">{{ d.descuento_pct|floatformat:1 }}%</td>
+                <td class="text-end" style="padding: 5px;">${{ d.subtotal|floatformat:2 }}</td>
+                <td class="text-end" style="padding: 5px;">${{ d.total|floatformat:2 }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Usando tu clase totals-box -->
+    <div class="totals-box" style="width: 40%; margin-left: 60%;">
+        <div class="line">
+            <span class="fw-bold" style="float: left;">Subtotal:</span> 
+            <span>${{ factura.subtotal|floatformat:2 }}</span>
+        </div>
+        <div class="line">
+            <span class="fw-bold" style="float: left;">IVA:</span> 
+            <span>${{ factura.iva_total|floatformat:2 }}</span>
+        </div>
+        <div class="line total">
+            <span style="float: left;">TOTAL:</span> 
+            <span>${{ factura.total|floatformat:2 }}</span>
+        </div>
+    </div>
+
+    {% if factura.observaciones %}
+    <div style="margin-top: 15px; font-size: 8px; color: #64748b;">
+        <span class="fw-bold">Observaciones:</span><br>
+        {{ factura.observaciones }}
+    </div>
+    {% endif %}
+
+    <!-- Usando tu clase report-footer -->
+    <div class="report-footer">
+        <span class="footer-brand">Comercial "El Porvenir"</span>
+        <p>Documento generado el {% now "d/m/Y H:i" %}</p>
+    </div>
+
+</body>
+</html>

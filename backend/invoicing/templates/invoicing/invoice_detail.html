@@ -50,6 +50,9 @@
   <div class="col-12 col-lg-4">
     <div class="card border-0 shadow-sm">
       <div class="card-body p-4">
+        <a href="{% url 'invoicing:invoice_pdf' factura.pk %}" class="btn btn-primary w-100 mb-2" target="_blank">
+          <i class="bi bi-file-earmark-pdf"></i> Descargar PDF
+        </a>
         <h6 class="fw-bold mb-3">Acciones</h6>
         {% if factura.is_active %}
         <form method="post" action="{% url 'invoicing:invoice_annul' factura.pk %}">

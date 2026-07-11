@@ -27,9 +27,9 @@ class InvoiceListView(PermissionRequiredMixin, ListView):
         fhasta = self.request.GET.get('hasta', '').strip()
         cliente_id = self.request.GET.get('cliente', '').strip()
         if fdesde:
-            qs = qs.filter(fecha_emision__gte=fdesde)
+            qs = qs.filter(fecha_emision__date__gte=fdesde)
         if fhasta:
-            qs = qs.filter(fecha_emision__lte=fhasta)
+            qs = qs.filter(fecha_emision__date__lte=fhasta)
         if cliente_id:
             qs = qs.filter(cliente_id=cliente_id)
         return qs.order_by('-fecha_emision')

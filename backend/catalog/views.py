@@ -42,6 +42,9 @@ class CategoriaUpdateView(PermissionRequiredMixin, UpdateView):
     template_name = 'catalog/categoria_form.html'
     success_url = reverse_lazy('catalog:categoria_list')
 
+    def get_queryset(self):
+        return Categoria.all_objects.all()
+
     def form_valid(self, form):
         messages.success(self.request, 'Categoría actualizada correctamente.')
         return super().form_valid(form)
@@ -71,10 +74,15 @@ class ProductoListView(PermissionRequiredMixin, ListView):
         q = self.request.GET.get('q', '').strip()
         cat = self.request.GET.get('categoria', '').strip()
         if q:
-            qs = qs.filter(Q(nombre__icontains=q) | Q(codigo__icontains=q))
+            qs = qs.filter(Q(nombre__icontains=q) | Q(codigo__icontains=q) | Q(categoria__nombre__icontains=q))
         if cat:
             qs = qs.filter(categoria_id=cat)
         return qs.order_by('nombre')
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['categorias'] = Categoria.objects.all() 
+        return context
 
 
 class ProductoCreateView(PermissionRequiredMixin, CreateView):
